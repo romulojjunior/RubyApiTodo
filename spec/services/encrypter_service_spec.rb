@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe EncrypterService do
+describe EncrypterService do
   let(:encrypter_service) { described_class }
   let(:user) { build :user }
   let(:password) { user.password }

@@ -29,6 +29,8 @@ end
 
 group :test do
    gem 'rspec-rails', '~> 3.5'
+   gem 'rspec-endpoint', '~> 0.1.0'
+   gem 'rspec-json_expectations', '~> 1.2'
    gem 'factory_girl_rails', '~> 4.7.0'
 end
 
