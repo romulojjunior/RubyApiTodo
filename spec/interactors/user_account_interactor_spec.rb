@@ -12,12 +12,13 @@ describe UserAccountInteractor do
     )
   end
 
-  describe "#create" do
-    before do
-      allow(encrypter_service).to receive(:encrypt_password).and_return(encrypted_password)
-      allow(user_repository).to receive(:create).and_return(user)
-    end
+  before do
+    allow(encrypter_service).to receive(:encrypt_password).and_return(encrypted_password)
+    allow(user_repository).to receive(:create).and_return(user)
+    allow(user_repository).to receive(:find_by_email).and_return(user)
+  end
 
+  describe "#create" do
     subject { interactor.create(user.email, user.password) }
 
     it do
@@ -32,6 +33,40 @@ describe UserAccountInteractor do
 
       it "raise a error"  do
         expect { subject }.to raise_error UserAccountInteractor::AttrDuplicationError
+      end
+    end
+  end
+
+  describe "#authenticate" do
+    subject { interactor.authenticate(user.email, user.password) }
+
+    it do
+      is_expected.to eq user.api_key
+    end
+
+    context "when user email not found" do
+      let(:invalid_email) { "invalid_#{user.email}"}
+      before do
+        allow(user_repository).to receive(:find_by_email).and_return(nil)
+      end
+
+      subject { interactor.authenticate(invalid_email, user.password) }
+
+      it "raise a error" do
+        expect { subject }.to raise_error(UserAccountInteractor::EmailNotFoundError)
+      end
+    end
+
+    context "when user password is wrong" do
+      let(:wrong_password) { "fake_#{user.password}" }
+      before do
+        allow(encrypter_service).to receive(:valid_password?).and_return(false)
+      end
+
+      subject { interactor.authenticate(user.email, wrong_password) }
+
+      it "raise a error" do
+        expect { subject }.to raise_error(UserAccountInteractor::InvalidPassword)
       end
     end
   end
