@@ -1,24 +1,27 @@
 # README
+  This project is a api rest example.
+  Users can signup and signin into system.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
+  TODO: Create endpoints to CRUD Cards-TODO-List
 
 * Ruby version
+  2.3.1
+
+* Rails version
+  5.0.0
 
 * System dependencies
-
-* Configuration
+  postgresql 9.5
 
 * Database creation
+  Create a new database.yml to postgresql
+  rake db:create
+  rake db:migrate
 
 * Database initialization
+  rake db:seed
 
 * How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+  rake db:create RAILS_ENV=test
+  rake db:migrate RAILS_ENV=test
+  rspec
