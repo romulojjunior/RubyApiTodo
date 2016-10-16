@@ -4,7 +4,7 @@ class CreateTasks < ActiveRecord::Migration[5.0]
       t.string :name, null:false
       t.string :description
       t.string :status, default: 0, null: false
-      t.belongs_to :card, foreign_key: true
+      t.belongs_to :card, foreign_key: { on_delete: :cascade }
 
       t.timestamps
     end

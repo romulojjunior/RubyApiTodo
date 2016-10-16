@@ -10,6 +10,8 @@ describe API::V1::AuthAPI do
     end
   end
 
+  after { Grape::Endpoint.before_each(nil) }
+
   endpoint "POST /api/v1/auth/signup" do
     let(:user) { build :user }
     let(:params) { { email: user.email, password: user.password } }

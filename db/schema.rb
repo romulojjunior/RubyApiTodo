@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160930200639) do
+ActiveRecord::Schema.define(version: 20161012213530) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,12 +25,12 @@ ActiveRecord::Schema.define(version: 20160930200639) do
   end
 
   create_table "tasks", force: :cascade do |t|
-    t.string   "name",                      null: false
+    t.string   "name",                    null: false
     t.string   "description"
-    t.string   "status",      default: "0", null: false
     t.integer  "card_id"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "status",      default: 0, null: false
     t.index ["card_id"], name: "index_tasks_on_card_id", using: :btree
   end
 
@@ -44,6 +44,6 @@ ActiveRecord::Schema.define(version: 20160930200639) do
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
   end
 
-  add_foreign_key "cards", "users"
-  add_foreign_key "tasks", "cards"
+  add_foreign_key "cards", "users", on_delete: :cascade
+  add_foreign_key "tasks", "cards", on_delete: :cascade
 end
