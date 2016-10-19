@@ -21,7 +21,6 @@ describe API::V1::CardsAPI do
     let(:make_request) { get path }
 
     describe "response body" do
-
       before do
         allow(card_repository).to receive(:find_by_user).with(user).and_return([card])
       end
@@ -44,13 +43,45 @@ describe API::V1::CardsAPI do
     describe "response body" do
       before do
         allow(card_interactor).to receive(:create).and_return(card)
-        make_request
       end
 
       subject { response.body }
 
       it do
+        make_request
         expect(subject).to include_json(name: card.name, status: card.status)
+      end
+    end
+  end
+
+  endpoint "GET /api/v1/cards/:id" do
+    let(:card) { build :card, id: 1 }
+    let(:make_request) { get "/api/v1/cards/#{card.id}" }
+
+    describe "response body" do
+      before do
+        allow(card_interactor).to receive(:find_by_user_and_card_id).and_return(card)
+      end
+
+      subject { response.body }
+
+      it do
+        make_request
+        expect(subject).to include_json(name: card.name, status: card.status)
+      end
+
+      context "when card not found" do
+        before do
+          allow(card_interactor).to receive(:find_by_user_and_card_id)
+            .and_raise(CardInteractor::CardNotFound)
+        end
+
+        subject { response.body }
+
+        it do
+          make_request
+          expect(subject).to include_json(error:"Card not found")
+        end
       end
     end
   end

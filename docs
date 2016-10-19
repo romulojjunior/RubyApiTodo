@@ -6,9 +6,11 @@ curl -X POST http://localhost:3000/api/v1/auth/signup -H 'Content-Type: applicat
 curl -X POST http://localhost:3000/api/v1/auth/signin -H 'Content-Type: application/json' -d '{"email": "user@email.com", "password": "12341234"}'
 -> {"api_key":"smwSpkosDOFpaHzGwdj1eA"}
 
+# Create a card
+curl -X POST http://localhost:3000/api/v1/cards -H 'Content-Type: application/json' -H "Authorization: smwSpkosDOFpaHzGwdj1eA" -d '{"name":"card_01", "tasks": [ {"name":"task01"} ] }' -i
+
 # Get cards
 curl -X GET http://localhost:3000/api/v1/cards -H "Authorization: smwSpkosDOFpaHzGwdj1eA"
 
-
-# Create a card
-curl -X POST http://localhost:3000/api/v1/cards -H 'Content-Type: application/json' -H "Authorization: smwSpkosDOFpaHzGwdj1eA" -d '{"name":"card_01", "tasks": [ {"name":"task01"} ] }' -i
+# Get a card by id
+curl -X GET http://localhost:3000/api/v1/cards/4

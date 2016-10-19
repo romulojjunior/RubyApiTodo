@@ -38,6 +38,19 @@ module API
           card = card_interactor.create(current_user, name, tasks: tasks)
           present card, with: API::V1::Entities::Card
         end
+
+        desc "Return a card"
+        get "/:id" do
+          begin
+          validate_api_key
+
+          card_id = params[:id]
+          card = card_interactor.find_by_user_and_card_id(current_user, card_id)
+          present card, with: API::V1::Entities::Card
+          rescue CardInteractor::CardNotFound
+            error!({ error: 'Card not found' }, 404)
+          end
+        end
       end
     end
   end
