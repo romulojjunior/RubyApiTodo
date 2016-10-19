@@ -85,4 +85,36 @@ describe API::V1::CardsAPI do
       end
     end
   end
+
+  endpoint "DELETE /api/v1/cards/:id" do
+    let(:card) { build :card, id: 1 }
+    let(:make_request) { delete "/api/v1/cards/#{card.id}" }
+
+    describe "response body" do
+      before do
+        allow(card_interactor).to receive(:remove_from_user_and_card_id).and_return(card)
+      end
+
+      subject { response.body }
+
+      it do
+        make_request
+        expect(subject).to include_json(name: card.name, status: card.status)
+      end
+
+      context "when card not found" do
+        before do
+          allow(card_interactor).to receive(:remove_from_user_and_card_id)
+            .and_raise(CardInteractor::CardNotFound)
+        end
+
+        subject { response.body }
+
+        it do
+          make_request
+          expect(subject).to include_json(error:"Card not found")
+        end
+      end
+    end
+  end
 end

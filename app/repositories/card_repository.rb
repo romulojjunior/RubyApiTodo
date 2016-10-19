@@ -22,4 +22,10 @@ class CardRepository
   def find_by_user_and_card_id(user, card_id)
     Card.where(id: card_id, user_id: user.id).limit(1).first
   end
+
+  def remove_from_user_and_card_id(user, card_id)
+    card = Card.where(id: card_id, user_id: user.id).limit(1).first
+    card.destroy if card
+    card
+  end
 end

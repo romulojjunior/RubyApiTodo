@@ -57,7 +57,7 @@ describe CardInteractor do
     end
   end
 
-  describe "find_by_user_and_card_id" do
+  describe "#find_by_user_and_card_id" do
     before do
       allow(card_repository).to receive(:find_by_user_and_card_id)
         .with(user, card.id).and_return(card)
@@ -91,6 +91,42 @@ describe CardInteractor do
       let(:invalid_user) { nil }
 
       subject { card_interactor.find_by_user_and_card_id(invalid_user, card.id) }
+
+      it "raise a  InvalidUserError" do
+        expect { subject }.to raise_error(CardInteractor::InvalidUserError)
+      end
+    end
+  end
+
+  describe "#remove_from_user_and_card_id" do
+    before do
+      allow(card_repository).to receive(:remove_from_user_and_card_id)
+        .with(user, card.id).and_return(card)
+    end
+
+    subject { card_interactor.remove_from_user_and_card_id(user, card.id) }
+
+    it do
+      is_expected.to eq card
+    end
+
+    context "when card not found" do
+      let(:invalid_card_id) { 1 }
+      before do
+        allow(card_repository).to receive(:remove_from_user_and_card_id).and_return(nil)
+      end
+
+      subject { card_interactor.remove_from_user_and_card_id(user, invalid_card_id) }
+
+      it "raise a CardInteractor:CardNotFound" do
+        expect { subject }.to raise_error(CardInteractor::CardNotFound)
+      end
+    end
+
+    context "when user is invalid" do
+      let(:invalid_user) { nil }
+
+      subject { card_interactor.remove_from_user_and_card_id(invalid_user, card.id) }
 
       it "raise a  InvalidUserError" do
         expect { subject }.to raise_error(CardInteractor::InvalidUserError)

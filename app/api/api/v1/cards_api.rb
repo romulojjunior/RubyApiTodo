@@ -51,6 +51,19 @@ module API
             error!({ error: 'Card not found' }, 404)
           end
         end
+
+        desc "Remove a card"
+        delete "/:id" do
+          begin
+          validate_api_key
+
+          card_id = params[:id]
+          card = card_interactor.remove_from_user_and_card_id(current_user, card_id)
+          present card, with: API::V1::Entities::Card
+          rescue CardInteractor::CardNotFound
+            error!({ error: 'Card not found' }, 404)
+          end
+        end
       end
     end
   end

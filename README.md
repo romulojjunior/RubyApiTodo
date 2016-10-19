@@ -1,8 +1,10 @@
 # README
   This project is a api rest example.
   Users can signup and signin into system.
+  Users can CRUD cards with tasks (todo list).
+  Examples - See docs file.
 
-  TODO: Create endpoints to CRUD Cards-TODO-List
+  TODO: Create endpoints to CRUD Tasks
 
 * Ruby version
   2.3.1
