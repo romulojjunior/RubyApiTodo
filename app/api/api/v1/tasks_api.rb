@@ -29,6 +29,22 @@ module API
             error!({ error: 'Task not found' }, 404)
           end
         end
+
+        desc "Remove a task"
+        params do
+          requires :id, type: Integer, allow_blank: false
+        end
+        delete "/:id" do
+          begin
+            validate_api_key
+
+            task_id = params[:id]
+            task = task_interactor.remove_from_user_and_task_id(current_user, task_id)
+            present task, with: API::V1::Entities::Task
+          rescue TaskInteractor::TaskNotFound
+            error!({ error: 'Task not found' }, 404)
+          end
+        end
       end
     end
   end

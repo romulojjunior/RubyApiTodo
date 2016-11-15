@@ -47,4 +47,35 @@ describe API::V1::TasksAPI do
       end
     end
   end
+
+  endpoint "DELETE /api/v1/tasks/:id" do
+    let(:make_request) { delete "/api/v1/tasks/#{task.id}" }
+
+    describe "response body" do
+      before do
+        allow(task_interactor).to receive(:remove_from_user_and_task_id).with(user, task.id).and_return(task)
+      end
+
+      subject { response.body }
+
+      it do
+        make_request
+        expect(subject).to include_json(name: task.name, status: task.status, description: task.description)
+      end
+
+      context "when task not found" do
+        before do
+          allow(task_interactor).to receive(:remove_from_user_and_task_id)
+            .and_raise(TaskInteractor::TaskNotFound)
+        end
+
+        subject { response.body }
+
+        it do
+          make_request
+          expect(subject).to include_json(error:"Task not found")
+        end
+      end
+    end
+  end
 end
