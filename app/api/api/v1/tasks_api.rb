@@ -30,6 +30,25 @@ module API
           end
         end
 
+        desc "Update a task"
+        params do
+          requires :id, type: Integer, allow_blank: false
+          optional :name, type: String, allow_blank: false
+          optional :status, type: String, allow_blank: false
+          optional :description, type: String, allow_blank: false
+        end
+        put "/:id" do
+          begin
+            validate_api_key
+
+            attributes = params
+            task = task_interactor.update_from_user_and_attributes(current_user, attributes)
+            present task, with: API::V1::Entities::Task
+          rescue
+            error!({ error: 'Task not found' }, 404)
+          end
+        end
+
         desc "Remove a task"
         params do
           requires :id, type: Integer, allow_blank: false

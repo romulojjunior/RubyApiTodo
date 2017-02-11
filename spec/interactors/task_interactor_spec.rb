@@ -50,6 +50,60 @@ describe TaskInteractor do
     end
   end
 
+  describe "#update_from_user_and_attributes" do
+    let(:attributes) do
+      {
+        id: task.id,
+        name: "My new task name",
+        status: "doing",
+        description: "A simple description"
+      }
+    end
+
+    before do
+      allow(task_repository).to receive(:update_from_user_and_attributes)
+      .with(user, attributes)
+      .and_return(task)
+    end
+
+    subject { task_interactor.update_from_user_and_attributes(user, attributes) }
+
+    it { is_expected.to eq task }
+
+    context "when user is invalid" do
+      let(:invalid_user) { nil }
+
+      before do
+        allow(task_repository).to receive(:update_from_user_and_attributes)
+          .with(invalid_user, attributes)
+          .and_raise(TaskInteractor::InvalidUserError)
+      end
+
+      subject { task_interactor.update_from_user_and_attributes(invalid_user, attributes) }
+
+      it "raise a TaskInteractor::InvalidUserError" do
+        expect { subject }.to raise_error(TaskInteractor::InvalidUserError)
+      end
+    end
+
+    context "when a task is invalid" do
+      let(:invalid_task_id) { nil }
+
+      before do
+        attributes[:id] = invalid_task_id
+        allow(task_repository).to receive(:update_from_user_and_attributes)
+          .with(user, attributes)
+          .and_raise(TaskInteractor::TaskNotFound)
+      end
+
+      subject { task_interactor.update_from_user_and_attributes(user, attributes) }
+
+      it "raise a TaskInteractor::TaskNotFound" do
+        expect { subject }.to raise_error(TaskInteractor::TaskNotFound)
+      end
+    end
+  end
+
   describe "#remove_from_user_and_task_id" do
     before do
       allow(task_repository).to receive(:remove_from_user_and_task_id)

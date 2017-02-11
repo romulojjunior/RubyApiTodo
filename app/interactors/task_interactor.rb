@@ -16,6 +16,14 @@ class TaskInteractor
     task
   end
 
+  def update_from_user_and_attributes(user, attributes)
+    raise InvalidUserError.new "Invalid user" if user.nil? || !user.is_a?(User)
+
+    task = task_repository.update_from_user_and_attributes(user, attributes)
+    raise TaskNotFound.new "Task not found" if task.nil?
+    task
+  end
+
   def remove_from_user_and_task_id(user, task_id)
     raise InvalidUserError.new "Invalid user" if user.nil? || !user.is_a?(User)
 
