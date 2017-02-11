@@ -4,8 +4,6 @@
   Users can CRUD cards with tasks (todo list).
   Examples - See docs file.
 
-  TODO: Create endpoints to CRUD Tasks
-
 * Ruby version
   2.3.1
 
@@ -27,3 +25,5 @@
   rake db:create RAILS_ENV=test
   rake db:migrate RAILS_ENV=test
   rspec
+
+* See 'docs file' for curl examples
