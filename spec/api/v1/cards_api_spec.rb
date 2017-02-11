@@ -86,6 +86,48 @@ describe API::V1::CardsAPI do
     end
   end
 
+  endpoint "PUT /api/v1/cards/:id" do
+    let(:card) { build :card, id: 1 }
+    let(:params) do
+      {
+        id: card.id,
+        name: "My new card name",
+        status: "enabled"
+      }
+    end
+    let(:card_updated) { build :card, params }
+    let(:make_request) { put "/api/v1/cards/#{card.id}", params: params }
+
+    describe "response body" do
+      before do
+        allow(card_interactor).to receive(:update_from_user_and_attributes)
+          .with(user, params).and_return(card_updated)
+      end
+
+      subject { response.body }
+
+      it do
+        make_request
+        attrs = {name: params[:name], status: params[:status]}
+        expect(subject).to include_json(attrs)
+      end
+
+      context "when card not found" do
+        before do
+          allow(card_interactor).to receive(:update_from_user_and_attributes)
+            .and_raise(CardInteractor::CardNotFound)
+        end
+
+        subject { response.body }
+
+        it do
+          make_request
+          expect(subject).to include_json(error:"Card not found")
+        end
+      end
+    end
+  end
+
   endpoint "DELETE /api/v1/cards/:id" do
     let(:card) { build :card, id: 1 }
     let(:make_request) { delete "/api/v1/cards/#{card.id}" }

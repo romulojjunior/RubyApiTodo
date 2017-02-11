@@ -98,6 +98,50 @@ describe CardInteractor do
     end
   end
 
+  describe "#update_from_user_and_attributes" do
+    let(:attributes) do
+      {
+        id: card.id,
+        name: "My new card name",
+        status: "enabled"
+      }
+    end
+
+    before do
+      allow(card_repository).to receive(:update_from_user_and_attributes)
+      .with(user, attributes)
+      .and_return(card)
+    end
+
+    subject { card_interactor.update_from_user_and_attributes(user, attributes) }
+
+    it { is_expected.to eq card }
+
+    context "when card not found" do
+      let(:invalid_card_id) { 0 }
+      before do
+        attributes[:id] = invalid_card_id
+        allow(card_repository).to receive(:update_from_user_and_attributes).and_return(nil)
+      end
+
+      subject { card_interactor.update_from_user_and_attributes(user, attributes) }
+
+      it "raise a CardInteractor:CardNotFound" do
+        expect { subject }.to raise_error(CardInteractor::CardNotFound)
+      end
+    end
+
+    context "when user is invalid" do
+      let(:invalid_user) { nil }
+
+      subject { card_interactor.update_from_user_and_attributes(invalid_user, attributes) }
+
+      it "raise a  InvalidUserError" do
+        expect { subject }.to raise_error(CardInteractor::InvalidUserError)
+      end
+    end
+  end
+
   describe "#remove_from_user_and_card_id" do
     before do
       allow(card_repository).to receive(:remove_from_user_and_card_id)

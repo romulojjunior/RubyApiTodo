@@ -28,6 +28,14 @@ class CardInteractor
     card
   end
 
+  def update_from_user_and_attributes(user, attributes)
+    raise InvalidUserError.new "Invalid user" if user.nil? || !user.is_a?(User)
+
+    card = card_repository.update_from_user_and_attributes(user, attributes)
+    raise CardNotFound.new "Card not found" if card.nil?
+    card
+  end
+
   def remove_from_user_and_card_id(user, card_id)
     raise InvalidUserError.new "Invalid user" if user.nil? || !user.is_a?(User)
 

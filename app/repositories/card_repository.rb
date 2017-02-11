@@ -23,9 +23,34 @@ class CardRepository
     Card.where(id: card_id, user_id: user.id).limit(1).first
   end
 
+  def update_from_user_and_attributes(user, attributes)
+    card = user.cards.find_by_id(attributes[:id])
+    return nil unless card
+
+    attrs = validate_attrs(attributes)
+    card.update_attributes(attrs)
+    card
+  end
+
   def remove_from_user_and_card_id(user, card_id)
     card = Card.where(id: card_id, user_id: user.id).limit(1).first
     card.destroy if card
     card
+  end
+
+  private
+
+  def validate_attrs(attributes)
+    attrs = {}
+
+    if attributes[:name].present?
+      attrs[:name] = attributes[:name]
+    end
+
+    if attributes[:status].present?
+      attrs[:status] = attributes[:status]
+    end
+
+    attrs
   end
 end

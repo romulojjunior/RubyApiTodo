@@ -52,6 +52,24 @@ module API
           end
         end
 
+        desc "Update a card"
+        params do
+          requires :id, type: Integer, allow_blank: false
+          optional :name, type: String, allow_blank: false
+          optional :status, type: String, allow_blank: false, values: ["enabled", "hidden", "disabled"]
+        end
+        put "/:id" do
+          begin
+            validate_api_key
+
+            attributes = params
+            card = card_interactor.update_from_user_and_attributes(current_user, attributes)
+            present card, with: API::V1::Entities::Card
+          rescue CardInteractor::CardNotFound
+            error!({ error: 'Card not found' }, 404)
+          end
+        end
+
         desc "Remove a card"
         delete "/:id" do
           begin

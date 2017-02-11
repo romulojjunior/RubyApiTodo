@@ -34,7 +34,7 @@ module API
         params do
           requires :id, type: Integer, allow_blank: false
           optional :name, type: String, allow_blank: false
-          optional :status, type: String, allow_blank: false
+          optional :status, type: String, allow_blank: false, values: ["todo", "doing", "paused", "pedding", "done"]
           optional :description, type: String, allow_blank: false
         end
         put "/:id" do
